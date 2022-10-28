@@ -38,6 +38,9 @@ return new class {
                         );
                     }
                 );
+                $group->any('/' . self::ALIAS, Resource::class)->add(
+                    $restful->withAllowedMethods(['GET'])
+                );
             }
         );
     }

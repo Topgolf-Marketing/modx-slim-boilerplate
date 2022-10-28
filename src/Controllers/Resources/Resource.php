@@ -20,10 +20,20 @@ class Resource extends Restful
      */
     public function get(ServerRequestInterface $request): ResponseInterface
     {
-        $defaultParams = ['tvs' => null];
-        $params = $this->getParams($request, $defaultParams);
+        $defaultParams = ['tvs' => null, 'parent' => 0, 'context' => 'web'];
+        $paramsCast = ['parent' => 'int'];
+        $params = $this->getParams($request, $defaultParams, $paramsCast);
         $tvs = explode(',', $params['tvs']);
-        $condition = ['id' => $request->getAttribute('id'), 'published' => true, 'deleted' => false];
+        $id = $request->getAttribute('id');
+        $alias = $request->getAttribute('alias');
+        $condition = ['published' => true, 'deleted' => false];
+        if ($id) {
+            $condition[] = ['id' => $id];
+        } elseif ($alias) {
+            $condition[] = ['alias' => $alias, 'parent' => $params['parent'], 'context_key' => $params['context']];
+        } else {
+            throw RestfulException::notFound();
+        }
 
         /** @var modResource $resource */
 
