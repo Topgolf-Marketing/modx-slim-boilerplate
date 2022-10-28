@@ -21,7 +21,7 @@ class Children extends Restful
      */
     public function get(ServerRequestInterface $request): ResponseInterface
     {
-        $defaultParams = ['tvs' => null, 'ignoreMenu' => false, 'sortBy' => 'menuindex', 'page' => 1, 'limit' => 10];
+        $defaultParams = ['tvs' => null, 'ignoreMenu' => false, 'sortBy' => 'menuindex', 'sortDir' => 'ASC', 'page' => 1, 'limit' => 10];
         $paramsCast = ['ignoreMenu' => 'boolean'];
         $paramLimits = [
             'limit' => [
@@ -49,7 +49,7 @@ class Children extends Restful
             $this->joinTVs($query, $tvs);
         }
         $query->limit($params['limit'], ($params['page'] - 1) * $params['limit']);
-        $query->sortby($params['sortBy'], 'ASC');
+        $query->sortby($params['sortBy'], $params['sortDir']);
         $resources = $this->modx->getIterator(modResource::class, $query);
         if (!$resources) {
             throw RestfulException::notFound();
